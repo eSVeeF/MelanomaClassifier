@@ -1,0 +1,70 @@
+"""Use the custom dataset for whatsapp"""
+
+from PIL import Image
+import os
+import matplotlib.pyplot as plt
+import numpy as np
+
+def read_bmps(folder_path, bmp_files):
+    #all 200 images stored here
+    images = []
+    #all pixels of the 200 images stored here, each image is a matrix with 576 rows (height of the image)
+    # and 768 columns (length of the image), each pixel is a array with RGB values ex:[R= 54, G = 200, B = 150]
+    # in the case of the lesion images (Black and white), the pixels are only False for black and True for White
+    images_arrays = []
+
+    # Iterate through the bmp files and display each one
+    for bmp_file in bmp_files:
+        # Construct the full path to the bmp file
+        image_path = os.path.join(folder_path, bmp_file)
+
+        # Use Pillow to open the image
+        ind_image = Image.open(image_path)
+        
+        images.append(ind_image)
+
+        # Convert the image to a NumPy array
+        images_arrays.append(np.array(ind_image))
+    
+    return images,images_arrays 
+# Specify the path to the folder containing bmp files
+folder_path = 'C:/Users/sergi/Documents/COMP 473/Project/PH2Dataset/Custom Images/Lesion'
+
+# Get a list of all bmp files in the folder
+bmp_files = [file for file in os.listdir(folder_path) if file.lower().endswith('.bmp')]
+
+BW_images = read_bmps(folder_path, bmp_files)[0]
+BW_images_arrays = read_bmps(folder_path, bmp_files)[1] 
+
+#BW_images[0] is the first image of the dataset, BW_images[199] is the 200th image of the dataset
+#images
+plt.imshow(BW_images[133])
+plt.axis('on')
+plt.show()
+
+#pixels
+BW_images_arrays[0] #are all the pixels of the first image of the dataset
+BW_images_arrays[0][0] #is the entire first row of pixels of the first image
+BW_images_arrays[0][0][0] #is the pixel in the first row and first column of the first image, that is
+# the top left corner pixel
+
+print(BW_images_arrays[133][311][512]) #is the pixel in the postion x=311 y=512 of the 134th image
+True
+# for color images
+
+# Specify the path to the folder containing bmp files
+folder_path = 'C:/Users/sergi/Documents/COMP 473/Project/PH2Dataset/Custom Images/Normal'
+
+# Get a list of all bmp files in the folder
+bmp_files = [file for file in os.listdir(folder_path) if file.lower().endswith('.bmp')]
+
+images = read_bmps(folder_path, bmp_files)[0]
+images_arrays = read_bmps(folder_path, bmp_files)[1]
+
+plt.imshow(images[133])
+plt.axis('on')
+plt.show()
+
+# [R G B], min value 0 max value 255
+print(images_arrays[133][300][250])
+[98 81 87]
