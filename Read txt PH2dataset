@@ -5,7 +5,7 @@ with open("C:/Users/sergi/Documents/COMP 473/Project/PH2Dataset/PH2_dataset.txt"
 # Replace "||" with "|" for smoother read
 modified_lines = [line.replace('||', '|') for line in lines]
 
-# Red up to line 201, after 201 is just the legends
+# Read up to line 201, after 201 is just the legends
 modified_content = ''.join(modified_lines[:201])
 
 # Write the modified content back to the file
@@ -20,8 +20,15 @@ df = pd.read_csv("C:/Users/sergi/Documents/COMP 473/Project/PH2Dataset/mod_PH2_d
 df = df.drop(df.columns[0], axis=1)
 df = df.drop(df.columns[10], axis=1)
 
-df.columns = ['Name', 'Histological_Diagnosis', 'Clinical_Diagnosis',
-       'Asymmetry', 'Pigment_Network', 'Dots/Globules', 'Streaks',
-       'Regression_Areas', ' Blue-Whitish_Veil', 'Colors']
+#rename columns
+df.columns = ['Name', 'Histological Diagnosis', 'Clinical Diagnosis',
+       'Asymmetry', 'Pigment Network', 'Dots/Globules', 'Streaks',
+       'Regression Areas', 'Blue-Whitish Veil', 'Colors']
 
+#Remove white spaces
+aux = ['Name', 'Histological Diagnosis', 'Pigment Network', 'Dots/Globules', 'Streaks',
+       'Regression Areas', 'Blue-Whitish Veil', 'Colors']
+
+for column in aux: 
+    df[column] = df[column].str.strip()
 df
