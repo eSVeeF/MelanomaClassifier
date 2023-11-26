@@ -1,5 +1,14 @@
+import os
+
+# Specify the path to the folder containing bmp files
+# Define the relative path
+relative_path = 'MelanomaClassifier'
+current_directory = os.getcwd()
+full_path = os.path.join(current_directory, relative_path)
+full_path = os.path.abspath(full_path)
+
 # Read the content of the file
-with open("C:/Users/sergi/Documents/COMP 473/Project/PH2Dataset/PH2_dataset.txt", 'r') as file:
+with open(full_path + "/PH2_dataset.txt", 'r') as file:
     lines = file.readlines()
 
 # Replace "||" with "|" for smoother read
@@ -9,12 +18,12 @@ modified_lines = [line.replace('||', '|') for line in lines]
 modified_content = ''.join(modified_lines[:201])
 
 # Write the modified content back to the file
-with open("C:/Users/sergi/Documents/COMP 473/Project/PH2Dataset/mod_PH2_dataset.txt", 'w') as file:
+with open(full_path + "/mod_PH2_dataset.txt", 'w') as file:
     file.write(modified_content)
 
 import pandas as pd   
 # read text file into pandas DataFrame 
-df = pd.read_csv("C:/Users/sergi/Documents/COMP 473/Project/PH2Dataset/mod_PH2_dataset.txt", sep="|") 
+df = pd.read_csv(full_path +"/mod_PH2_dataset.txt", sep="|") 
 
 #drop mistaken column
 df = df.drop(df.columns[0], axis=1)

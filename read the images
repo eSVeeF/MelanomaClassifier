@@ -5,7 +5,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-def read_bmps(folder_path, bmp_files):
+def read_bmps(full_path, bmp_files):
     #all 200 images stored here
     images = []
     #all pixels of the 200 images stored here, each image is a matrix with 576 rows (height of the image)
@@ -16,7 +16,7 @@ def read_bmps(folder_path, bmp_files):
     # Iterate through the bmp files and display each one
     for bmp_file in bmp_files:
         # Construct the full path to the bmp file
-        image_path = os.path.join(folder_path, bmp_file)
+        image_path = os.path.join(full_path, bmp_file)
 
         # Use Pillow to open the image
         ind_image = Image.open(image_path)
@@ -27,14 +27,20 @@ def read_bmps(folder_path, bmp_files):
         images_arrays.append(np.array(ind_image))
     
     return images,images_arrays 
+
+
 # Specify the path to the folder containing bmp files
-folder_path = 'C:/Users/sergi/Documents/COMP 473/Project/PH2Dataset/Custom Images/Lesion'
+# Define the relative path
+relative_path = 'MelanomaClassifier/PH2Dataset/Custom Images/Normal'
+current_directory = os.getcwd()
+full_path = os.path.join(current_directory, relative_path)
+full_path = os.path.abspath(full_path)
 
 # Get a list of all bmp files in the folder
-bmp_files = [file for file in os.listdir(folder_path) if file.lower().endswith('.bmp')]
+bmp_files = [file for file in os.listdir(full_path) if file.lower().endswith('.bmp')]
 
-BW_images = read_bmps(folder_path, bmp_files)[0]
-BW_images_arrays = read_bmps(folder_path, bmp_files)[1] 
+BW_images = read_bmps(full_path, bmp_files)[0]
+BW_images_arrays = read_bmps(full_path, bmp_files)[1] 
 
 #BW_images[0] is the first image of the dataset, BW_images[199] is the 200th image of the dataset
 #images
@@ -52,14 +58,18 @@ print(BW_images_arrays[133][311][512]) #is the pixel in the postion x=311 y=512 
 True
 # for color images
 
-# Specify the path to the folder containing bmp files
-folder_path = 'C:/Users/sergi/Documents/COMP 473/Project/PH2Dataset/Custom Images/Normal'
+try:
+    # Get a list of all bmp files in the folder
+    bmp_files = [file for file in os.listdir(full_path) if file.lower().endswith('.bmp')]
+except FileNotFoundError:
+    print(f"The directory '{full_path}' does not exist.")
+except PermissionError:
+    print(f"Permission error accessing the directory '{full_path}'.")
+except Exception as e:
+    print(f"An error occurred: {e}")
 
-# Get a list of all bmp files in the folder
-bmp_files = [file for file in os.listdir(folder_path) if file.lower().endswith('.bmp')]
-
-images = read_bmps(folder_path, bmp_files)[0]
-images_arrays = read_bmps(folder_path, bmp_files)[1]
+images = read_bmps(full_path, bmp_files)[0]
+images_arrays = read_bmps(full_path, bmp_files)[1]
 
 plt.imshow(images[133])
 plt.axis('on')
@@ -67,4 +77,4 @@ plt.show()
 
 # [R G B], min value 0 max value 255
 print(images_arrays[133][300][250])
-[98 81 87]
+# [98 81 87]
