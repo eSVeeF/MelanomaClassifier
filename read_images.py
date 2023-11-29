@@ -50,6 +50,11 @@ class ImageLoader:
         plt.show()
 
     """Get the pixels of the image at the specified index and position."""
-    def get_image_pixels(self, index, x, y):
+    def get_all_pixels(self, index):
+        # Get the pixels of the image at the given index
+        return self.images_arrays[index]
+
+    """Get the pixels of the image at the specified index and position."""
+    def get_one_pixel(self, index, x, y):
         # Get the pixels of the image at the given index
         return self.images_arrays[index][x][y]
