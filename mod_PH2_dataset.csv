@@ -1,4 +1,4 @@
-   Name , Histological Diagnosis , Clinical Diagnosis , Asymmetry , Pigment Network , Dots/Globules , Streaks , Regression Areas , Blue-Whitish Veil ,           Colors ,Label
+Name,Histological Diagnosis,Clinical Diagnosis,Asymmetry,Pigment Network,Dots/Globules,Streaks,Regression Areas,Blue-Whitish Veil,Colors,Label
  IMD003 ,                        ,0,0,               T ,             A ,       A ,                A ,                 A ,4,no_malenoma
  IMD009 ,                        ,0,0,               T ,             A ,       A ,                A ,                 A ,3,no_malenoma
  IMD016 ,                        ,0,0,               T ,             T ,       A ,                A ,                 A ,             3  4 ,no_malenoma

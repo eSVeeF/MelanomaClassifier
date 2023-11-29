@@ -5,13 +5,27 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
+import pandas as pd
+
+# Load your dataset with image names and ground truth labels
+dataset = pd.read_csv('mod_PH2_dataset.csv')
+
+# Trim leading and trailing whitespaces from the "Name" column
+dataset['Name'] = dataset['Name'].str.strip()
+# Add the ".bmp" extension to the "Name" column
+dataset['Name'] = dataset['Name'] + '.bmp'
+
+# Create a dictionary to map image names to labels
+labels_dict = dict(zip(dataset['Name'], dataset['Label']))
+
+# Load your images using the ImageLoader
+image_loader = ImageLoader('PH2Dataset/Custom Images/Normal')
+
+# Create a list of labels based on the image names
+labels = [labels_dict[image_loader.bmp_files[i]] for i in range(len(image_loader.bmp_files))]
 
 # Load your images and labels
 image_loader = ImageLoader('PH2Dataset/Custom Images/Normal')
-
-# Assuming you have labels for your images (0 for benign, 1 for malignant)
-# This is just a placeholder, replace it with your actual labels
-labels = np.random.randint(2, size=len(image_loader.bmp_files))
 
 # Flatten the image arrays for each image
 flattened_images = [image.flatten() for image in image_loader.images_arrays]
