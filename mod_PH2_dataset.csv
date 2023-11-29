@@ -79,7 +79,7 @@ Name,Histological Diagnosis,Clinical Diagnosis,Asymmetry,Pigment Network,Dots/Gl
  IMD399 ,                        ,0,0,               T ,             A ,       A ,                A ,                 A ,             3  4 ,no_malenoma
  IMD400 ,                        ,0,0,               T ,             A ,       A ,                A ,                 A ,4,no_malenoma
  IMD402 ,                        ,0,0,               T ,             A ,       A ,                A ,                 A ,4,no_malenoma
- IMD002 ,                        ,1,1,              AT ,             A ,       A ,                A ,                 A ,             3  4 ,no_malenoma
+ IMD002 ,                        ,1,1,              AT ,             A ,       A ,                A ,                 A ,             3  4 ,malenoma
  IMD004 ,                        ,1,1,              AT ,             A ,       A ,                A ,                 A ,             3  4 ,malenoma
  IMD013 ,                        ,1,1,              AT ,             A ,       A ,                A ,                 A ,3,malenoma
  IMD015 ,                        ,1,0,              AT ,             A ,       A ,                A ,                 A ,             2  5 ,malenoma
