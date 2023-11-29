@@ -9,12 +9,48 @@ import pandas as pd
 import warnings # avoid warnings of pandas
 warnings.filterwarnings('ignore') # warnings.filterwarnings('default')
 
-relative_path = 'PH2Dataset\mod_PH2_dataset.csv'
+import os
+
+# Specify the path to the folder containing bmp files
+# Define the relative path
+relative_path = 'PH2Dataset'
 current_directory = os.getcwd()
 full_path = os.path.join(current_directory, relative_path)
 full_path = os.path.abspath(full_path)
-# Load your dataset with image names and ground truth labels
-dataset = pd.read_csv(full_path)
+
+# Read the content of the file
+with open(full_path + "/PH2_dataset.txt", 'r') as file:
+    lines = file.readlines()
+
+# Replace "||" with "|" for smoother read
+modified_lines = [line.replace('||', '|') for line in lines]
+
+# Read up to line 201, after 201 is just the legends
+modified_content = ''.join(modified_lines[:201])
+
+# Write the modified content back to the file
+with open(full_path + "/mod_PH2_dataset.txt", 'w') as file:
+    file.write(modified_content)
+
+import pandas as pd   
+# read text file into pandas DataFrame 
+dataset = pd.read_csv(full_path +"/mod_PH2_dataset.txt", sep="|") 
+
+#drop mistaken column
+dataset = dataset.drop(dataset.columns[0], axis=1)
+dataset = dataset.drop(dataset.columns[10], axis=1)
+
+#rename columns
+dataset.columns = ['Name', 'Histological Diagnosis', 'Clinical Diagnosis',
+       'Asymmetry', 'Pigment Network', 'Dots/Globules', 'Streaks',
+       'Regression Areas', 'Blue-Whitish Veil', 'Colors']
+
+#Remove white spaces
+aux = ['Name', 'Histological Diagnosis', 'Pigment Network', 'Dots/Globules', 'Streaks',
+       'Regression Areas', 'Blue-Whitish Veil', 'Colors']
+
+for column in aux: 
+    dataset[column] = dataset[column].str.strip()
 
 # Trim leading and trailing whitespaces from the "Name" column
 dataset['Name'] = dataset['Name'].str.strip()
@@ -22,19 +58,21 @@ dataset['Name'] = dataset['Name'].str.strip()
 dataset['Name'] = dataset['Name'] + '.bmp'
 
 # better binary labels, 0 = no_melanoma, 1 = melanoma
+# Legends for Clinical Diagnosis: 0 - Common Nevus; 1 - Atypical Nevus; 2 - Melanoma.
+# As the paper said, merge atypical and melanoma
+dataset['Label'] = 0
 index = -1
-for label in dataset['Label']:
+for diag in dataset['Clinical Diagnosis']:
     index += 1
-    if label == "no_melanoma":
+    if diag == 0:
         dataset.loc[index,'Label'] = 0
-    elif label == "melanoma":
+    elif diag == 1 or diag == 2:
         dataset.loc[index,'Label'] = 1
 
 # create a dataset but keep only this two features
 columns_to_keep = [dataset.columns[0], dataset.columns[-1]]
 # new dataset
 df = dataset[columns_to_keep]
-df.loc[80,:]
 
 # Load your images using the ImageLoader
 image_loader = ImageLoader('PH2Dataset/Custom Images/Normal')
