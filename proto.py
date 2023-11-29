@@ -102,7 +102,8 @@ def M_ij(pixels_lesion, i,j):
             for pixel in pixel_row:
                 y += 1
                 if pixel == True:
-                    df.loc[index,'Area'] += 1
+                    df.loc[index,'Area'] += (x**i)*(y**j)*1
+                # if pixel == False, f(x,y) = 0 so no need to compute nothing
 
 # compute area, tsting with only for the first 6 images because it takes time to do all 200                 
 M_ij(df['Pixels Lesion'][0:6],0,0) 
