@@ -16,7 +16,7 @@ class ImageLoader:
             print(f"An unexpected error occurred: {e}")
 
     """Read BMP files from the specified folder in the specified target size and return images and arrays."""
-    def read_bmps(self, target_size=(761, 553)):
+    def read_bmps(self, target_size=(100, 100)):
         # target_size=(761, 553), not all the images have the same pixels, the smallest one is 553 height
         # and 761 length
         # all 200 images stored here
