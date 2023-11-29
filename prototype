@@ -1,0 +1,106 @@
+import numpy as np
+%run read_images.ipynb
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd  
+import warnings # avoid warnings of pandas
+warnings.filterwarnings('ignore') # warnings.filterwarnings('default')
+
+relative_path = 'PH2Dataset\mod_PH2_dataset.csv'
+current_directory = os.getcwd()
+full_path = os.path.join(current_directory, relative_path)
+full_path = os.path.abspath(full_path)
+# Load your dataset with image names and ground truth labels
+dataset = pd.read_csv(full_path)
+
+# Trim leading and trailing whitespaces from the "Name" column
+dataset['Name'] = dataset['Name'].str.strip()
+# Add the ".bmp" extension to the "Name" column
+dataset['Name'] = dataset['Name'] + '.bmp'
+
+# create a dataset but keep only this two features
+columns_to_keep = [dataset.columns[0], dataset.columns[-1]]
+# new dataset
+df = dataset[columns_to_keep]
+
+# Load your images using the ImageLoader
+image_loader = ImageLoader('PH2Dataset/Custom Images/Normal')
+# Add the pixels as a column
+df['Pixels'] = image_loader.images_arrays 
+# if want to check we did it correctly 
+# aux_dataset["Pixels"][128] == ImageLoader.get_all_pixels(image_loader, 128)
+
+# Load lesion images
+image_loader_lesion = ImageLoader('PH2Dataset/Custom Images/Lesion')
+# Add the pixels as a column
+df['Pixels Lesion'] = image_loader_lesion.images_arrays # Ignore Warning
+
+# add 'Area' feature
+df['Area'] = 0
+
+# compute area in ratio of white pixels/(white+black pixels=total)
+counter = -1
+black_count = 0
+for image in df['Pixels Lesion'][16:19]:
+    counter += 1
+    black_count = 0
+    for pixel_row in image:
+        for pixel in pixel_row:
+            if pixel == True:
+                ww += 1
+                df.loc[counter,'Area'] += 1
+            else:
+                black_count += 1
+    df.loc[counter,'Area'] = df.loc[counter,'Area']/(df.loc[counter,'Area']+black_count)
+    
+"""end of prototype"""
+
+# Initialize lists to store extracted features
+features = []
+
+# Iterate through images and extract additional features
+for image in image_loader.images_arrays:
+    # Perform feature extraction for "Pigment Network" and "Dots/Globules"
+    # Calculate area of black regions (dots/globules)
+    dots_globules_area = np.sum(image == 0)
+    # Calculate area of white regions (pigment network)
+    pigment_network_area = np.sum(image == 255)
+
+    # Append these features to the flattened image array
+    flattened_image = image.flatten()
+    flattened_image = np.append(flattened_image, [dots_globules_area, pigment_network_area])
+
+    # Add the flattened image with additional features to the list of features
+    features.append(flattened_image)
+
+# Convert the list of features to a NumPy array
+X = np.array(features)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2, random_state=42)
+
+# Initialize the MLP Classifier
+mlp_classifier = MLPClassifier(hidden_layer_sizes=(100,), max_iter=1000, random_state=42)
+
+# Train the classifier
+mlp_classifier.fit(X_train, y_train)
+
+# Make predictions on the test set
+predictions = mlp_classifier.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, predictions)
+print(f"Accuracy: {accuracy}")
+
+# Create a confusion matrix
+conf_matrix = confusion_matrix(y_test, predictions)
+
+# Display the confusion matrix using seaborn
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.title("Confusion Matrix")
+plt.show()
