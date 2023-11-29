@@ -1,74 +1,54 @@
 import numpy as np
-from read_images import ImageLoader
-from sklearn.neural_network import MLPClassifier
+import pandas as pd
+import os
+import importlib
 from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
-import pandas as pd
-import cv2  # Import OpenCV for image processing
+from read_images import ImageLoader
 
-# Load your dataset with image names and ground truth labels
+# Load dataset
 dataset = pd.read_csv('mod_PH2_dataset.csv')
-
-# Trim leading and trailing whitespaces from the "Name" column
-dataset['Name'] = dataset['Name'].str.strip()
-# Add the ".bmp" extension to the "Name" column
-dataset['Name'] = dataset['Name'] + '.bmp'
-
-# Create a dictionary to map image names to labels
+dataset['Name'] = dataset['Name'].str.strip() + '.bmp'
 labels_dict = dict(zip(dataset['Name'], dataset['Label']))
 
-# Load your images using the ImageLoader
+# Load images
 image_loader = ImageLoader('PH2Dataset/Custom Images/Normal')
-
-# Create a list of labels based on the image names
 labels = [labels_dict[image_loader.bmp_files[i]] for i in range(len(image_loader.bmp_files))]
 
-# Load your images and labels
-image_loader = ImageLoader('PH2Dataset/Custom Images/Normal')
+# Feature Builders: Dinamically loading all files in FeatureBuilders folder
+feature_builders = []
+for file in os.listdir('FeatureBuilders'):
+    if file.endswith('.py'):
+        module_name = file[:-3]
+        module = importlib.import_module(f'FeatureBuilders.{module_name}')
+        if getattr(module, 'READY', False):
+            feature_builders.append(module)
 
-# Initialize lists to store extracted features
+# Feature extraction
 features = []
-
-# Iterate through images and extract additional features
 for image in image_loader.images_arrays:
-    # Perform feature extraction for "Pigment Network" and "Dots/Globules"
-    # Calculate area of black regions (dots/globules)
-    dots_globules_area = np.sum(image == 0)
-    # Calculate area of white regions (pigment network)
-    pigment_network_area = np.sum(image == 255)
-
-    # Append these features to the flattened image array
     flattened_image = image.flatten()
-    flattened_image = np.append(flattened_image, [dots_globules_area, pigment_network_area])
-
-    # Add the flattened image with additional features to the list of features
+    for builder in feature_builders:
+        feature = builder.build(image)
+        flattened_image = np.append(flattened_image, feature)
     features.append(flattened_image)
 
-# Convert the list of features to a NumPy array
+# Prepare data for ML model
 X = np.array(features)
-
-# Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2, random_state=42)
 
-# Initialize the MLP Classifier
+# Train and evaluate the classifier
 mlp_classifier = MLPClassifier(hidden_layer_sizes=(100,), max_iter=1000, random_state=42)
-
-# Train the classifier
 mlp_classifier.fit(X_train, y_train)
-
-# Make predictions on the test set
 predictions = mlp_classifier.predict(X_test)
-
-# Calculate accuracy
 accuracy = accuracy_score(y_test, predictions)
 print(f"Accuracy: {accuracy}")
 
-# Create a confusion matrix
+# Confusion matrix
 conf_matrix = confusion_matrix(y_test, predictions)
-
-# Display the confusion matrix using seaborn
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
 plt.xlabel("Predicted Label")
 plt.ylabel("True Label")

@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from read_images import ImageLoader
 from sklearn.neural_network import MLPClassifier
