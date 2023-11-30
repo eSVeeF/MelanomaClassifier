@@ -18,7 +18,7 @@ def calculate_feature(image):
         counter += np.sum(pixel_row == True)
     # Implement feature extraction logic here
     # Example: # Calculate area of black regions (dots/globules)
-    return counter / 10000
+    return counter
 
 def combine_features(image_normal, image_lesion):
     # Implement logic to combine features from both image types

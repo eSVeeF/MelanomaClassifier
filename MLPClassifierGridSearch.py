@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 import importlib
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, auc, confusion_matrix, roc_curve
 import seaborn as sns
@@ -52,33 +52,43 @@ X = np.array(features)
 X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2, random_state=42)
 
 # Train and evaluate the classifier
-mlp_classifier = MLPClassifier(hidden_layer_sizes=(98,), max_iter=1000, random_state=42, solver='adam', activation='tanh')
+mlp_classifier = MLPClassifier(hidden_layer_sizes=(7,), max_iter=1000, random_state=42)
 mlp_classifier.fit(X_train, y_train)
 predictions = mlp_classifier.predict(X_test)
 accuracy = accuracy_score(y_test, predictions)
 print(f"Accuracy: {accuracy}")
 
-# Confusion matrix
-conf_matrix = confusion_matrix(y_test, predictions)
-sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
-plt.xlabel("Predicted Label")
-plt.ylabel("True Label")
-plt.title("Confusion Matrix")
-plt.show()
+# Create a range of values for the number of neurons (1 to 100)
+neuron_range = list(range(1, 101))
 
-# ROC Curve
-y_scores = mlp_classifier.predict_proba(X_test)[:, 1]  # Probability estimates of the positive class
-fpr, tpr, thresholds = roc_curve(y_test, y_scores)
-roc_auc = auc(fpr, tpr)
+# Create configurations for one hidden layer
+hidden_layer_sizes = [(n,) for n in neuron_range]
 
-# Plot ROC curve
-plt.figure(figsize=(8, 8))
-plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc))
-plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver Operating Characteristic (ROC) Curve')
-plt.legend(loc="lower right")
-plt.show()
+# Define parameter grid
+param_grid = {
+    'hidden_layer_sizes': hidden_layer_sizes,
+    'activation': ['tanh', 'relu'],
+    'solver': ['sgd', 'adam'],
+    'alpha': [0.0001, 0.05],
+    'learning_rate_init': [0.001, 0.01],
+    'max_iter': [1000]
+}
+
+# Create MLPClassifier object
+mlp = MLPClassifier()
+
+# Create GridSearchCV object
+grid_search = GridSearchCV(mlp, param_grid, n_jobs=-1, cv=5, scoring='accuracy')
+
+# Fit grid_search to the data
+grid_search.fit(X_train, y_train)
+
+# Print the best parameters and best score
+print("Best Parameters: ", grid_search.best_params_)
+print("Best Score: ", grid_search.best_score_)
+
+# Evaluate the best model
+best_model = grid_search.best_estimator_
+predictions = best_model.predict(X_test)
+accuracy = accuracy_score(y_test, predictions)
+print(f"Test Accuracy: {accuracy}")
