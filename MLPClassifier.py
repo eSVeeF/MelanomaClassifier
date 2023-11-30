@@ -14,11 +14,13 @@ dataset = pd.read_csv('mod_PH2_dataset.csv')
 dataset['Name'] = dataset['Name'].str.strip() + '.bmp'
 labels_dict = dict(zip(dataset['Name'], dataset['Label']))
 
-# Load images
-image_loader = ImageLoader('PH2Dataset/Custom Images/Normal')
-labels = [labels_dict[image_loader.bmp_files[i]] for i in range(len(image_loader.bmp_files))]
+# Load images from both directories
+relative_dir = 'PH2Dataset'
+image_loader_normal = ImageLoader(relative_dir + '/Custom Images/Normal')
+image_loader_lesion = ImageLoader(relative_dir + '/Custom Images/Lesion')
+labels = [labels_dict[image_loader_normal.bmp_files[i]] for i in range(len(image_loader_normal.bmp_files))]
 
-# Feature Builders: Dinamically loading all files in FeatureBuilders folder
+# Feature Builders loading
 feature_builders = []
 for file in os.listdir('FeatureBuilders'):
     if file.endswith('.py'):
@@ -29,10 +31,16 @@ for file in os.listdir('FeatureBuilders'):
 
 # Feature extraction
 features = []
-for image in image_loader.images_arrays:
-    flattened_image = image.flatten()
+for normal_image, lesion_image in zip(image_loader_normal.images_arrays, image_loader_lesion.images_arrays):
+    flattened_image = normal_image.flatten()
     for builder in feature_builders:
-        feature = builder.build(image)
+        image_type = getattr(builder, 'IMAGE_TYPE', 'NORMAL')
+        if image_type == 'NORMAL':
+            feature = builder.build(normal_image)
+        elif image_type == 'LESION':
+            feature = builder.build(lesion_image)
+        elif image_type == 'BOTH':
+            feature = builder.build(normal_image, lesion_image)
         flattened_image = np.append(flattened_image, feature)
     features.append(flattened_image)
 
