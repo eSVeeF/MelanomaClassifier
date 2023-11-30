@@ -1,8 +1,7 @@
 import numpy as np
-# Example: FeatureBuilders/PigmentNetworkBuilder.py
 
-FEATURE_NAME = "Pigment Network"
-READY = False
+FEATURE_NAME = "Area"
+READY = True
 IMAGE_TYPE = "LESION"  # Options: "NORMAL", "LESION", "BOTH"
 
 def build(image_normal=None, image_lesion=None):
@@ -14,9 +13,12 @@ def build(image_normal=None, image_lesion=None):
         return combine_features(image_normal, image_lesion)
 
 def calculate_feature(image):
+    counter = 0
+    for pixel_row in image:
+        counter += np.sum(pixel_row == True)
     # Implement feature extraction logic here
-    # Example: Calculate area of white regions (pigment network)
-    return np.sum(image == 255)
+    # Example: # Calculate area of black regions (dots/globules)
+    return counter
 
 def combine_features(image_normal, image_lesion):
     # Implement logic to combine features from both image types

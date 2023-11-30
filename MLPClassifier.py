@@ -36,9 +36,9 @@ for normal_image, lesion_image in zip(image_loader_normal.images_arrays, image_l
     for builder in feature_builders:
         image_type = getattr(builder, 'IMAGE_TYPE', 'NORMAL')
         if image_type == 'NORMAL':
-            feature = builder.build(normal_image)
+            feature = builder.build(image_normal=normal_image)
         elif image_type == 'LESION':
-            feature = builder.build(lesion_image)
+            feature = builder.build(image_lesion=lesion_image)
         elif image_type == 'BOTH':
             feature = builder.build(normal_image, lesion_image)
         flattened_image = np.append(flattened_image, feature)

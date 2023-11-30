@@ -2,10 +2,10 @@ import numpy as np
 # Example: FeatureBuilders/DotsGlobulesAreaBuilder.py
 
 FEATURE_NAME = "Dots/Globules"
-READY = True
-IMAGE_TYPE = "NORMAL"  # Options: "NORMAL", "LESION", "BOTH"
+READY = False
+IMAGE_TYPE = "LESION"  # Options: "NORMAL", "LESION", "BOTH"
 
-def build(image_normal, image_lesion=None):
+def build(image_normal=None, image_lesion=None):
     if IMAGE_TYPE == "NORMAL":
         return calculate_feature(image_normal)
     elif IMAGE_TYPE == "LESION":
