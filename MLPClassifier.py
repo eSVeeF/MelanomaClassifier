@@ -4,7 +4,7 @@ import os
 import importlib
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_curve, auc
 import seaborn as sns
 import matplotlib.pyplot as plt
 from read_images import ImageLoader
@@ -14,13 +14,11 @@ dataset = pd.read_csv('mod_PH2_dataset.csv')
 dataset['Name'] = dataset['Name'].str.strip() + '.bmp'
 labels_dict = dict(zip(dataset['Name'], dataset['Label']))
 
-# Load images from both directories
-relative_dir = 'PH2Dataset'
-image_loader_normal = ImageLoader(relative_dir + '/Custom Images/Normal')
-image_loader_lesion = ImageLoader(relative_dir + '/Custom Images/Lesion')
-labels = [labels_dict[image_loader_normal.bmp_files[i]] for i in range(len(image_loader_normal.bmp_files))]
+# Load images
+image_loader = ImageLoader('PH2Dataset/Custom Images/Normal')
+labels = [labels_dict[image_loader.bmp_files[i]] for i in range(len(image_loader.bmp_files))]
 
-# Feature Builders loading
+# Feature Builders: Dinamically loading all files in FeatureBuilders folder
 feature_builders = []
 for file in os.listdir('FeatureBuilders'):
     if file.endswith('.py'):
@@ -31,19 +29,12 @@ for file in os.listdir('FeatureBuilders'):
 
 # Feature extraction
 features = []
-for normal_image, lesion_image in zip(image_loader_normal.images_arrays, image_loader_lesion.images_arrays):
-    flattened_image = normal_image.flatten()
-    reduced_image = []
+for image in image_loader.images_arrays:
+    flattened_image = image.flatten()
     for builder in feature_builders:
-        image_type = getattr(builder, 'IMAGE_TYPE', 'NORMAL')
-        if image_type == 'NORMAL':
-            feature = builder.build(image_normal=normal_image)
-        elif image_type == 'LESION':
-            feature = builder.build(image_lesion=lesion_image)
-        elif image_type == 'BOTH':
-            feature = builder.build(normal_image, lesion_image)
-        reduced_image = np.append(reduced_image, feature)
-    features.append(reduced_image)
+        feature = builder.build(image)
+        flattened_image = np.append(flattened_image, feature)
+    features.append(flattened_image)
 
 # Prepare data for ML model
 X = np.array(features)
@@ -62,4 +53,21 @@ sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
 plt.xlabel("Predicted Label")
 plt.ylabel("True Label")
 plt.title("Confusion Matrix")
+plt.show()
+
+# ROC Curve
+y_scores = mlp_classifier.predict_proba(X_test)[:, 1]  # Probability estimates of the positive class
+fpr, tpr, thresholds = roc_curve(y_test, y_scores)
+roc_auc = auc(fpr, tpr)
+
+# Plot ROC curve
+plt.figure(figsize=(8, 8))
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc))
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend(loc="lower right")
 plt.show()
