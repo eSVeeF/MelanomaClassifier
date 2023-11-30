@@ -33,6 +33,7 @@ for file in os.listdir('FeatureBuilders'):
 features = []
 for normal_image, lesion_image in zip(image_loader_normal.images_arrays, image_loader_lesion.images_arrays):
     flattened_image = normal_image.flatten()
+    reduced_image = []
     for builder in feature_builders:
         image_type = getattr(builder, 'IMAGE_TYPE', 'NORMAL')
         if image_type == 'NORMAL':
@@ -41,8 +42,8 @@ for normal_image, lesion_image in zip(image_loader_normal.images_arrays, image_l
             feature = builder.build(image_lesion=lesion_image)
         elif image_type == 'BOTH':
             feature = builder.build(normal_image, lesion_image)
-        flattened_image = np.append(flattened_image, feature)
-    features.append(flattened_image)
+        reduced_image = np.append(reduced_image, feature)
+    features.append(reduced_image)
 
 # Prepare data for ML model
 X = np.array(features)
