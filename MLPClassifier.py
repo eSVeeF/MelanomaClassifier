@@ -27,8 +27,10 @@ for file in os.listdir('FeatureBuilders'):
         module_name = file[:-3]
         module = importlib.import_module(f'FeatureBuilders.{module_name}')
         if getattr(module, 'READY', False):
+            print("Loaded " + getattr(module, 'FEATURE_NAME', False) + " builder")
             feature_builders.append(module)
 
+print("Loaded " + str(len(feature_builders)) + " feature builders")
 # Feature extraction
 features = []
 for normal_image, lesion_image in zip(image_loader_normal.images_arrays, image_loader_lesion.images_arrays):

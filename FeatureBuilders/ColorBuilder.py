@@ -1,7 +1,7 @@
 import numpy as np
 
 FEATURE_NAME = "Colors"
-READY = True
+READY = False
 IMAGE_TYPE = "NORMAL"  # Options: "NORMAL", "LESION", "BOTH"
 
 def build(image_normal=None, image_lesion=None):
@@ -44,7 +44,7 @@ def color_percentage(image,name_color, percentage):
                     counter += 1
                 
     # total pixels length of rows + length of columns, we use the 1st image for computation        
-    total_pixels = image.shape[0] + image.shape[1]
+    total_pixels = image.shape[0] + image.shape[1] #FOR ME IT SHOULD BE MULTIPLICATION INSTEAD OF SUMATION
     # check if more that percentage %
     if counter >= (total_pixels*percentage):
         counter = 1
