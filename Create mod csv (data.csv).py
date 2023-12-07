@@ -40,4 +40,5 @@ dataset['Number'] = dataset['Name'].str.extract('(\d+)').astype(int)
 dataset = dataset.sort_values(by='Number')
 dataset = dataset.drop('Number', axis = 1)
 # write csv
-dataset.to_csv('data.csv', index=False)
+csv_file_path = os.path.join(current_directory, 'data.csv')
+dataset.to_csv(csv_file_path, index=False)
