@@ -30,11 +30,14 @@ dataset = dataset.iloc[:,[1,3]]
 
 #rename columns
 dataset.columns = ['Name', 'Label']
+# convert to binary (atypical + melanoma)
+dataset['Label']= dataset['Label'].replace(2, 1)
 # strip
 dataset['Name'] = dataset['Name'].str.strip() + '.bmp'
 # Extract the number of the Name
 dataset['Number'] = dataset['Name'].str.extract('(\d+)').astype(int)
 # Sort the DataFrame based on the 'Number' to match with the order of ImageLoader
 dataset = dataset.sort_values(by='Number')
-# create dict
-labels_dict = dict(zip(dataset['Name'], dataset['Label']))
+dataset = dataset.drop('Number', axis = 1)
+# write csv
+dataset.to_csv('data.csv', index=False)
