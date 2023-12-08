@@ -1,6 +1,6 @@
 import numpy as np
 
-FEATURE_NAME = "ColorsOptimized"
+FEATURE_NAME = "Colors"
 READY = True
 IMAGE_TYPE = "NORMAL"  # Options: "NORMAL", "LESION", "BOTH"
 
