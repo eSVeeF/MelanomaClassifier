@@ -1,6 +1,6 @@
 import numpy as np
 
-FEATURE_NAME = "Colors"
+FEATURE_NAME = "InefficentColors"
 READY = False
 IMAGE_TYPE = "NORMAL"  # Options: "NORMAL", "LESION", "BOTH"
 
