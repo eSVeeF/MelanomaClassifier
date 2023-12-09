@@ -31,7 +31,7 @@ def calculate_feature(image):
     percentage_threshold = total_pixels * 0.05
     counter = [1 if np.sum(masks[color]) >= percentage_threshold else 0 for color in masks]
 
-    return np.array(counter)
+    return np.sum(np.array(counter))
 
 def combine_features(image_normal, image_lesion):
     # Implement logic to combine features from both image types
