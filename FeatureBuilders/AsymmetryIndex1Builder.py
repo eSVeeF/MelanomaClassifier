@@ -6,7 +6,7 @@ from skimage.morphology import label
 
 FEATURE_NAME = "AsymmetryIndex1"
 READY = True
-IMAGE_TYPE = "NORMAL"  # Options: "NORMAL", "LESION", "BOTH"
+IMAGE_TYPE = "LESION"  # Options: "NORMAL", "LESION", "BOTH"
 
 def build(image_normal=None, image_lesion=None):
     if IMAGE_TYPE == "NORMAL":
