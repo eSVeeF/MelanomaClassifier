@@ -1,9 +1,12 @@
 import numpy as np
 import pandas as pd
 from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
 from keras.metrics import Recall
 from keras.optimizers.legacy import Adam
+from keras.regularizers import l2
+from keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from CustomLearningRateScheduler import CustomLearningRateScheduler
 from read_images import ImageLoader
 from sklearn.model_selection import train_test_split
 
@@ -39,23 +42,29 @@ y_test = y_test.reshape(-1, 1)
 # Define the input shape based on the reshaped data
 input_shape = X_train.shape[1:]  # This will be (100, 100, 3) if your images are 100x100 RGB
 
+# Regularization factor
+l2_reg = 0.001
+learning_rate = 0.0005
+
 # Create a CNN model
 cnn_model = Sequential([
-    Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape),
+    Conv2D(16, kernel_size=(3, 3), activation='relu', input_shape=input_shape),
+    BatchNormalization(),
     MaxPooling2D(pool_size=(2, 2)),
-    Dropout(0.25),
+    Dropout(0.05),
     
-    Conv2D(64, kernel_size=(3, 3), activation='relu'),
+    Conv2D(32, kernel_size=(3, 3), activation='relu', ),
+    BatchNormalization(),
     MaxPooling2D(pool_size=(2, 2)),
-    Dropout(0.25),
+    Dropout(0.05),
     
     Flatten(),
-    Dense(128, activation='relu'),
-    Dropout(0.5),
-    Dense(1, activation='sigmoid')  # Use 'softmax' if you have more than two classes
+    Dense(64, activation='relu', kernel_regularizer=l2(l2_reg)),
+    BatchNormalization(),
+    Dropout(0.35),
+    Dense(1, activation='sigmoid', kernel_regularizer=l2(l2_reg))  # Use 'softmax' if you have more than two classes
 ])
 
-learning_rate = 0.001
 optimizer = Adam(learning_rate=learning_rate)
 
 cnn_model.compile(loss='binary_crossentropy',  # Use 'categorical_crossentropy' for more than two classes
@@ -66,8 +75,14 @@ cnn_model.compile(loss='binary_crossentropy',  # Use 'categorical_crossentropy' 
 # They should have the shape (num_images, img_height, img_width, num_channels)
 # You might need to reshape them and also normalize the pixel values (e.g., divide by 255)
 
+# Define EarlyStopping callback
+early_stopping = EarlyStopping(monitor='val_loss', patience=100, mode='min')
+
+# My own rule for learning scheduler
+custom_lr_scheduler = CustomLearningRateScheduler(threshold=0.4, reduction_factor=0.5, min_lr=0.0001)
+
 # Fit the CNN model
-cnn_model.fit(X_train, y_train, batch_size=32, epochs=90, validation_data=(X_test, y_test))
+cnn_model.fit(X_train, y_train, batch_size=32, epochs=200, validation_data=(X_test, y_test), callbacks=[early_stopping, custom_lr_scheduler])
 
 # Evaluate the classifier
 score = cnn_model.evaluate(X_test, y_test)

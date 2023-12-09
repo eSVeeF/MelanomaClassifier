@@ -1,3 +1,4 @@
+import pprint
 import numpy as np
 import pandas as pd
 import os
@@ -16,7 +17,7 @@ labels_dict = dict(zip(dataset['Name'], dataset['Label']))
 
 # Load images from both directories
 relative_dir = 'PH2Dataset'
-image_loader_normal = ImageLoader(relative_dir + '/Custom Images/Normal')
+image_loader_normal = ImageLoader(relative_dir + '/Custom Images/Normal', True)
 image_loader_lesion = ImageLoader(relative_dir + '/Custom Images/Lesion')
 labels = [labels_dict[image_loader_normal.bmp_files[i]] for i in range(len(image_loader_normal.bmp_files))]
 
@@ -46,6 +47,10 @@ for normal_image, lesion_image in zip(image_loader_normal.images_arrays, image_l
             feature = builder.build(normal_image, lesion_image)
         reduced_image = np.append(reduced_image, feature)
     features.append(reduced_image)
+
+# print first 10 features
+for label, feature in zip(image_loader_normal.bmp_files, features):
+    pprint.pprint(str(label) + " " + str(feature))
 
 # Prepare data for ML model
 X = np.array(features)

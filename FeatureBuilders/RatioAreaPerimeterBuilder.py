@@ -2,7 +2,7 @@ import numpy as np
 import importlib
 
 FEATURE_NAME = "RatioAreaPerimeter"
-READY = True
+READY = False
 IMAGE_TYPE = "LESION"  # Options: "NORMAL", "LESION", "BOTH"
 
 def build(image_normal=None, image_lesion=None):

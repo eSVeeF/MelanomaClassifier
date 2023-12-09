@@ -6,6 +6,7 @@ from keras.metrics import Recall
 from keras.optimizers.legacy import Adam
 from read_images import ImageLoader
 from sklearn.model_selection import train_test_split, KFold
+from keras.callbacks import EarlyStopping
 
 # Load dataset
 dataset = pd.read_csv('mod_PH2_dataset.csv')
@@ -99,11 +100,14 @@ for train, test in kfold.split(X, y):
     print('------------------------------------------------------------------------')
     print(f'Training for fold {fold_no} ...')
 
+    early_stopping = EarlyStopping(monitor='loss', patience=10, mode='min')
+
     # Fit data to model
     history = cnn_model.fit(X[train], y[train].reshape(-1, 1),
                   batch_size=32,
-                  epochs=50,
-                  verbose=1)
+                  epochs=100,
+                  verbose=1,
+                  callbacks=[early_stopping])
 
     # Evaluate the model on the test data
     scores = cnn_model.evaluate(X[test], y[test].reshape(-1, 1), verbose=0)

@@ -4,7 +4,7 @@ import math
 
 
 FEATURE_NAME = "CompactnessIndex"
-READY = True
+READY = False
 IMAGE_TYPE = "LESION"  # Options: "NORMAL", "LESION", "BOTH"
 
 def build(image_normal=None, image_lesion=None):

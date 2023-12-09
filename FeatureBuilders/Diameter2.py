@@ -1,7 +1,7 @@
 import numpy as np
 
 FEATURE_NAME = "D2"
-READY = True
+READY = False
 IMAGE_TYPE = "LESION"  # Options: "NORMAL", "LESION", "BOTH"
 
 def build(image_normal=None, image_lesion=None):
