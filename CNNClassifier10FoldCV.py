@@ -5,7 +5,7 @@ from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from keras.metrics import Recall
 from keras.optimizers.legacy import Adam
 from read_images import ImageLoader
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold
 
 # Load dataset
 dataset = pd.read_csv('mod_PH2_dataset.csv')
@@ -62,19 +62,64 @@ cnn_model.compile(loss='binary_crossentropy',  # Use 'categorical_crossentropy' 
                   optimizer=optimizer,
                   metrics=['accuracy', Recall()])
 
-# Since CNNs require input as an array of images, ensure X_train and X_test are correctly shaped
-# They should have the shape (num_images, img_height, img_width, num_channels)
-# You might need to reshape them and also normalize the pixel values (e.g., divide by 255)
+num_folds = 5
+kfold = KFold(n_splits=num_folds, shuffle=True)
 
-# Fit the CNN model
-cnn_model.fit(X_train, y_train, batch_size=32, epochs=90, validation_data=(X_test, y_test))
+# List to store results from each fold
+fold_results = []
 
-# Evaluate the classifier
-score = cnn_model.evaluate(X_test, y_test)
-print(f"Test Loss: {score[0]}")
-print(f"Test Accuracy: {score[1]}")
-print(f"Test Recall: {score[2]}")
+# K-fold Cross Validation model evaluation
+fold_no = 1
+for train, test in kfold.split(X, y):
 
-# Predictions
-predictions = cnn_model.predict(X_test)
-predictions = (predictions > 0.5)  # Thresholding probabilities to get binary classification
+    cnn_model = Sequential([
+        Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape),
+        MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
+        
+        Conv2D(64, kernel_size=(3, 3), activation='relu'),
+        MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
+        
+        Flatten(),
+        Dense(128, activation='relu'),
+        Dropout(0.5),
+        Dense(1, activation='sigmoid')  # Use 'softmax' if you have more than two classes
+    ])
+
+    # Compile the model
+    cnn_model.compile(loss='binary_crossentropy',
+                      optimizer=Adam(learning_rate=0.001),
+                      metrics=['accuracy', Recall()])
+
+    # Ensure labels are the correct shape for the fold
+    y_train_fold = y[train].reshape(-1, 1)
+    y_test_fold = y[test].reshape(-1, 1)
+
+    print('------------------------------------------------------------------------')
+    print(f'Training for fold {fold_no} ...')
+
+    # Fit data to model
+    history = cnn_model.fit(X[train], y[train].reshape(-1, 1),
+                  batch_size=32,
+                  epochs=50,
+                  verbose=1)
+
+    # Evaluate the model on the test data
+    scores = cnn_model.evaluate(X[test], y[test].reshape(-1, 1), verbose=0)
+
+    # Append the scores to the results list
+    fold_results.append(scores)
+
+    print(f'Score for fold {fold_no}: {cnn_model.metrics_names[0]} of {scores[0]}; {cnn_model.metrics_names[1]} of {scores[1]*100}%; {cnn_model.metrics_names[2]} of {scores[2]*100}%')
+    
+    fold_no += 1
+
+print(fold_results)
+
+average_results = np.mean(fold_results, axis=0)
+std_dev_results = np.std(fold_results, axis=0)
+print('------------------------------------------------------------------------')
+print('Average scores for all folds:')
+for i in range(len(cnn_model.metrics_names)):
+    print(f'{cnn_model.metrics_names[i]}: {average_results[i]} (± {std_dev_results[i]})')
