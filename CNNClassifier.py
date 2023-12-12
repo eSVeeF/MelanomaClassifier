@@ -9,6 +9,9 @@ from keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from CustomLearningRateScheduler import CustomLearningRateScheduler
 from read_images import ImageLoader
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, auc, confusion_matrix, roc_curve
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Load dataset
 dataset = pd.read_csv('mod_PH2_dataset.csv')
@@ -43,12 +46,12 @@ y_test = y_test.reshape(-1, 1)
 input_shape = X_train.shape[1:]  # This will be (100, 100, 3) if your images are 100x100 RGB
 
 # Regularization factor
-l2_reg = 0.001
-learning_rate = 0.0005
+l2_reg = 0.02
+learning_rate = 0.001
 
 # Create a CNN model
 cnn_model = Sequential([
-    Conv2D(16, kernel_size=(3, 3), activation='relu', input_shape=input_shape),
+    Conv2D(24, kernel_size=(3, 3), activation='relu', input_shape=input_shape),
     BatchNormalization(),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.05),
@@ -61,7 +64,7 @@ cnn_model = Sequential([
     Flatten(),
     Dense(64, activation='relu', kernel_regularizer=l2(l2_reg)),
     BatchNormalization(),
-    Dropout(0.35),
+    Dropout(0.40),
     Dense(1, activation='sigmoid', kernel_regularizer=l2(l2_reg))  # Use 'softmax' if you have more than two classes
 ])
 
@@ -76,13 +79,13 @@ cnn_model.compile(loss='binary_crossentropy',  # Use 'categorical_crossentropy' 
 # You might need to reshape them and also normalize the pixel values (e.g., divide by 255)
 
 # Define EarlyStopping callback
-early_stopping = EarlyStopping(monitor='val_loss', patience=100, mode='min')
+early_stopping = EarlyStopping(monitor='val_loss', patience=50, mode='min')
 
 # My own rule for learning scheduler
 custom_lr_scheduler = CustomLearningRateScheduler(threshold=0.4, reduction_factor=0.5, min_lr=0.0001)
 
 # Fit the CNN model
-cnn_model.fit(X_train, y_train, batch_size=32, epochs=200, validation_data=(X_test, y_test), callbacks=[early_stopping, custom_lr_scheduler])
+cnn_model.fit(X_train, y_train, batch_size=32, epochs=180, validation_data=(X_test, y_test), callbacks=[early_stopping, custom_lr_scheduler])
 
 # Evaluate the classifier
 score = cnn_model.evaluate(X_test, y_test)
@@ -93,3 +96,31 @@ print(f"Test Recall: {score[2]}")
 # Predictions
 predictions = cnn_model.predict(X_test)
 predictions = (predictions > 0.5)  # Thresholding probabilities to get binary classification
+
+# Confusion matrix
+conf_matrix = confusion_matrix(y_test, predictions)
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.title("Confusion Matrix")
+plt.show()
+
+# Predict probabilities for ROC curve
+y_prob = cnn_model.predict(X_test)
+
+# ROC Curve
+fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+roc_auc = auc(fpr, tpr)
+
+# Plot ROC curve
+plt.figure(figsize=(8, 8))
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc))
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend(loc="lower right")
+plt.show()
+
