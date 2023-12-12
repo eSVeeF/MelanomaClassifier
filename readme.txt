@@ -6,6 +6,9 @@ Adriana Danko
 Melanoma Classifier
 Prediction on Melanoma skin lessions with 82% accuracy and 82% recall
 
+Project Demonstration Video of 2 mins (video also included in submission)
+https://drive.google.com/file/d/1F1runOzocyxI1bwU3FtgdoAyuFr0XEJz/view?usp=drive_link
+
 Getting Started
 
 Prerequisites
