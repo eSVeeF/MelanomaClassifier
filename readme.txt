@@ -1,13 +1,11 @@
 Authors
-Carlos Garcia
+Carlos 
 Sergio Vizcaino
-Adriana Danko
+Adriana 
 
 Melanoma Classifier
 Prediction on Melanoma skin lessions with 82% accuracy and 82% recall
 
-Project Demonstration Video of 2 mins (video also included in submission)
-https://drive.google.com/file/d/1F1runOzocyxI1bwU3FtgdoAyuFr0XEJz/view?usp=drive_link
 
 Getting Started
 
@@ -17,7 +15,7 @@ Python 3.8
 pip install -r requirements.txt
 
 Getting the code
-git clone https://github.com/carlosdanielgt/MelanomaClassifier
+git clone https://github.com/eSVeeF/MelanomaClassifier
 
 
 Running the code
