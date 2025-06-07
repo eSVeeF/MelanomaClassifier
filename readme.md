@@ -1,27 +1,64 @@
-<h1 align="left">Melanoma Classifier</h1>
+# MelanomaClassifier
 
-###
+A deep learning project for classifying skin lesions as melanoma or non-melanoma using medical images. This repository implements a pipeline that combines Convolutional Neural Networks (CNNs) and Multi-Layer Perceptrons (MLPs), leveraging the PH2Dataset for training and validation.
 
-<p align="left">Prediction on Melanoma skin lessions with 82% accuracy and 82% recall</p>
+## 📂 Project Structure
 
-###
+- `CNNClassifier.py` — Defines the CNN architecture for image-based classification.
+- `MLPClassifier.py` — Implements an MLP model for auxiliary features.
+- `CombinedModel.py` — Combines CNN and MLP outputs into a unified classifier.
+- `CustomLRScheduler.py` — Contains a cosine annealing learning rate scheduler.
+- `PH2Dataset.py` — Loads and preprocesses the PH2 skin lesion dataset.
+- `train.py` — Main training script using cross-validation.
+- `inference.py` — Inference script to run predictions on new data.
+- `utils.py` — Utility functions for metric calculation, plotting, etc.
 
-<h2 align="left">Getting Started</h2>
+## 🧠 Features
 
-###
+- Modular CNN and MLP models for flexible experimentation.
+- Custom cosine learning rate scheduler for smoother convergence.
+- K-fold cross-validation for robust performance evaluation.
+- Dataset loading and preprocessing tailored to the PH2 dataset.
+- Support for training and inference workflows.
 
-<img align="right" height="215" src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1007%2Fs00500-023-08557-3/MediaObjects/500_2023_8557_Fig3_HTML.png"  />
+## 📦 Installation
 
-###
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/eSVeeF/MelanomaClassifier.git
+   cd MelanomaClassifier
+2. (Optional) Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
 
-<p align="left">Prerequisites<br>Python 3.8<br><br>pip install -r requirements.txt<br><br>Getting the code<br>git clone https://github.com/eSVeeF/MelanomaClassifier</p>
+## 🖼️ Dataset
+The model is trained on the PH2 Dataset. Please download it from the official source (due to licensing restrictions) and organize it in the following format:
 
-###
+MelanomaClassifier/
+├── data/
+│   └── PH2Dataset/
+│       ├── images/
+│       └── masks/
 
-<h2 align="left">Running the code</h2>
+## 🚀 Usage
+### Training
+```bash
+python train.py --epochs 50 --batch_size 32 --lr 0.001 --folds 5
+```
+### Inference
+```bash
+python inference.py --image_path ./sample_image.jpg --model_path ./models/best_model.pth
+```
 
-###
+## 🔧 Configuration
+Model parameters, optimizer settings, and data paths can be configured through command-line arguments or by editing the train.py script.
 
-<p align="left">MLP Classifier<br>To run the Multilayer Perceptron (MLP) classifier:<br>python MLPClassifier.py<br><br>1D 10-Fold CNN<br>To execute the 1-dimensional CNN:<br>python 1D_10fold_CNN.py<br><br>CNN Classifier<br>To run the Convolutional Neural Network (CNN) classifier:<br>python CNNClassifier.py</p>
+## 📊 Evaluation
+Performance metrics such as accuracy, F1-score, and confusion matrices are computed and logged during cross-validation. Plots and logs are saved in the results/ directory.
 
-###
+## 🤝 Contributing
+Contributions are welcome! Please open an issue or submit a pull request for improvements, bug fixes, or feature requests.
