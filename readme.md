@@ -26,7 +26,7 @@ A deep learning project for classifying skin lesions as melanoma or non-melanoma
 | `CNNClassifier.py` | CNN model architecture |
 | `CNNClassifier5FoldCV.py` | 5-fold CV for CNN |
 | `CustomLearningRateScheduler.py` | Learning rate strategy |
-| `MLPClassifier.py` | MLP model for tabular features |
+| `MLPClassifier.py` | MLP model |
 | `MLPClassifierGridSearch.py` | MLP model with Grid Search |
 | `mod_PH2_dataset.csv` | Processed metadata |
 | `read_images.py` | Image reading and preprocessing |
