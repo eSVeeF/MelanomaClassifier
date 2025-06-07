@@ -6,38 +6,38 @@ A deep learning project for classifying skin lesions as melanoma or non-melanoma
   <img src="https://github.com/user-attachments/assets/f209710d-a7fb-40e4-9674-3ebf4fd4a30e" alt="image" width="400"/>
 </p>
 
-## 📂 Project Structure
-
-- `CNNClassifier.py` — Defines the CNN architecture for image-based classification.
-- `MLPClassifier.py` — Implements an MLP model for auxiliary features.
-- `CombinedModel.py` — Combines CNN and MLP outputs into a unified classifier.
-- `CustomLRScheduler.py` — Contains a cosine annealing learning rate scheduler.
-- `PH2Dataset.py` — Loads and preprocesses the PH2 skin lesion dataset.
-- `train.py` — Main training script using cross-validation.
-- `inference.py` — Inference script to run predictions on new data.
-- `utils.py` — Utility functions for metric calculation, plotting, etc.
-
 ## 🧠 Features
 
-- Modular CNN and MLP models for flexible experimentation.
-- Custom cosine learning rate scheduler for smoother convergence.
-- K-fold cross-validation for robust performance evaluation.
-- Dataset loading and preprocessing tailored to the PH2 dataset.
-- Support for training and inference workflows.
+- Modular CNN and MLP models for flexible experimentation
+- Custom cosine learning rate scheduler for smoother convergence
+- K-fold cross-validation for robust performance evaluation
+- Dataset loading and preprocessing tailored to the PH2 dataset
+- Support for training and inference workflows
+
+## 📂 Project Structure
+
+| File/Folder | Purpose |
+|-------------|---------|
+| `CNNClassifier.py` | CNN model architecture |
+| `MLPClassifier.py` | MLP model for tabular features |
+| `1D_10fold_CNN.py` | 10-fold CV implementation |
+| `CNNClassifier5FoldCV.py` | 5-fold CV for CNN |
+| `read_images.py` | Image reading and preprocessing |
+| `CustomLearningRateScheduler.py` | Learning rate strategy |
+| `mod_PH2_dataset.csv` | Processed metadata |
+| `PreProcessing/` | Image and data preprocessing tools |
+| `PH2Dataset/` | Contains the dataset (if not excluded) |
+| `FeatureBuilders/` | Scripts to extract additional features |
+
+---
 
 ## 📦 Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/eSVeeF/MelanomaClassifier.git
-   cd MelanomaClassifier
-2. (Optional) Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
+```bash
+git clone https://github.com/your-username/MelanomaClassifier.git
+cd MelanomaClassifier
+pip install -r requirements.txt
+```
 
 ## 🖼️ Dataset
 The model is trained on the PH2 Dataset and organized in the following format:
@@ -52,29 +52,26 @@ MelanomaClassifier/
 
 ## 🚀 Usage
 ### MLP Classifier 
-To run the Multilayer Perceptron (MLP) classifier
+To run the Multilayer Perceptron (MLP) classifier with grid search:
 ```bash
-python MLPClassifier.py
+python MLPClassifierGridSearch.py.py
 ```
 ### 1D 10-Fold CNN
-To execute the 1-dimensional CNN
+To execute the 1-dimensional CNN 10-fold:
 ```bash
 python 1D_10fold_CNN.py
 ```
 ### CNN Classifier
-To run the Convolutional Neural Network (CNN) classifier
+To train the Convolutional Neural Network (CNN) with 5-fold cross-validation:
 ```bash
-python CNNClassifier.py
+python CNNClassifier5FoldCV.py
 ```
 
-## 🔧 Configuration
-Model parameters, optimizer settings, and data paths can be configured through command-line arguments or by editing the train.py script.
-
-## 📊 Evaluation
-Performance metrics such as accuracy, recall, and loss are computed and logged during cross-validation. Plots and logs are saved in the results/ directory.
+## 📉 Sample Results
+The models achieve a competitive 82% accuracy and 82% recall on PH2 data using standard metrics. Code is modular and ready for adaptation to other medical imaging datasets.
 
 ## 🤝 Contributing
 Contributions are welcome! Please open an issue or submit a pull request for improvements, bug fixes, or feature requests.
 
 ## License
-This project is licensed under the MIT License. See LICENSE for details.
+This project is licensed under the MIT License, feel free to use and modify for non-commercial purposes.
