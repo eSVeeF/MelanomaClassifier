@@ -2,6 +2,9 @@
 
 A deep learning project for classifying skin lesions as melanoma or non-melanoma using medical images. This repository implements a pipeline that combines Convolutional Neural Networks (CNNs) and Multi-Layer Perceptrons (MLPs), leveraging the PH2Dataset for training and validation.
 
+![image](https://github.com/user-attachments/assets/f209710d-a7fb-40e4-9674-3ebf4fd4a30e)
+
+
 ## 📂 Project Structure
 
 - `CNNClassifier.py` — Defines the CNN architecture for image-based classification.
@@ -37,12 +40,13 @@ A deep learning project for classifying skin lesions as melanoma or non-melanoma
 
 ## 🖼️ Dataset
 The model is trained on the PH2 Dataset. Please download it from the official source (due to licensing restrictions) and organize it in the following format:
-
+```bash
 MelanomaClassifier/
 ├── data/
 │   └── PH2Dataset/
 │       ├── images/
 │       └── masks/
+```
 
 ## 🚀 Usage
 ### Training
