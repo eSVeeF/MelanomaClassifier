@@ -56,7 +56,7 @@ MelanomaClassifier/
 #### MLP Classifier 
 To run the Multilayer Perceptron (MLP) classifier with grid search:
 ```bash
-python MLPClassifierGridSearch.py.py
+python MLPClassifierGridSearch.py
 ```
 #### 1D 10-Fold CNN
 To execute the 1-dimensional CNN 10-fold:
