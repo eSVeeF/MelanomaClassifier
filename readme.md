@@ -10,7 +10,7 @@ A deep learning project for classifying skin lesions as melanoma or non-melanoma
 
 - Modular CNN and MLP models for flexible experimentation
 - Custom cosine learning rate scheduler for smoother convergence
-- K-fold cross-validation for robust performance evaluation
+- 5-fold and 10-fold cross-validation for robust performance evaluation
 - Dataset loading and preprocessing tailored to the PH2 dataset
 - Support for training and inference workflows
 
@@ -18,16 +18,18 @@ A deep learning project for classifying skin lesions as melanoma or non-melanoma
 
 | File/Folder | Purpose |
 |-------------|---------|
-| `CNNClassifier.py` | CNN model architecture |
-| `MLPClassifier.py` | MLP model for tabular features |
-| `1D_10fold_CNN.py` | 10-fold CV implementation |
-| `CNNClassifier5FoldCV.py` | 5-fold CV for CNN |
-| `read_images.py` | Image reading and preprocessing |
-| `CustomLearningRateScheduler.py` | Learning rate strategy |
-| `mod_PH2_dataset.csv` | Processed metadata |
 | `PreProcessing/` | Image and data preprocessing tools |
 | `PH2Dataset/` | Contains the dataset (if not excluded) |
 | `FeatureBuilders/` | Scripts to extract additional features |
+| `results/` | Accuracies and recalls of all models |
+| `1D_10fold_CNN.py` | 10-fold CV implementation of the 1-dimension CNN|
+| `CNNClassifier.py` | CNN model architecture |
+| `CNNClassifier5FoldCV.py` | 5-fold CV for CNN |
+| `CustomLearningRateScheduler.py` | Learning rate strategy |
+| `MLPClassifier.py` | MLP model for tabular features |
+| `MLPClassifierGridSearch.py` | MLP model with Grid Search |
+| `mod_PH2_dataset.csv` | Processed metadata |
+| `read_images.py` | Image reading and preprocessing |
 
 ---
 
@@ -68,7 +70,7 @@ python CNNClassifier5FoldCV.py
 ```
 
 ## 📉 Sample Results
-The models achieve a competitive 82% accuracy and 82% recall on PH2 data using standard metrics. Code is modular and ready for adaptation to other medical imaging datasets.
+The models achieve a competitive **82%** accuracy and **91%** recall on PH2 data using standard metrics. Code is modular and ready for adaptation to other medical imaging datasets.
 
 ## 🤝 Contributing
 Contributions are welcome! Please open an issue or submit a pull request for improvements, bug fixes, or feature requests.
