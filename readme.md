@@ -51,17 +51,17 @@ MelanomaClassifier/
 ```
 
 ## 🚀 Usage
-### MLP Classifier 
+#### MLP Classifier 
 To run the Multilayer Perceptron (MLP) classifier with grid search:
 ```bash
 python MLPClassifierGridSearch.py.py
 ```
-### 1D 10-Fold CNN
+#### 1D 10-Fold CNN
 To execute the 1-dimensional CNN 10-fold:
 ```bash
 python 1D_10fold_CNN.py
 ```
-### CNN Classifier
+#### CNN Classifier
 To train the Convolutional Neural Network (CNN) with 5-fold cross-validation:
 ```bash
 python CNNClassifier5FoldCV.py
