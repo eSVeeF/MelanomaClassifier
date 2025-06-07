@@ -1,6 +1,6 @@
 # MelanomaClassifier
 
-A deep learning project for classifying skin lesions as melanoma or non-melanoma using medical images. This repository implements a pipeline that combines Convolutional Neural Networks (CNNs) and Multi-Layer Perceptrons (MLPs), leveraging the PH2Dataset for training and validation.
+A deep learning project for classifying skin lesions as melanoma or non-melanoma using medical images. This repository implements a pipeline that combines Convolutional Neural Networks (CNNs) and Multi-Layer Perceptrons (MLPs), leveraging the PH2Dataset for training and validation. Report.pdf contains the full story
 
 ![image](https://github.com/user-attachments/assets/f209710d-a7fb-40e4-9674-3ebf4fd4a30e)
 
@@ -39,30 +39,41 @@ A deep learning project for classifying skin lesions as melanoma or non-melanoma
    pip install -r requirements.txt
 
 ## 🖼️ Dataset
-The model is trained on the PH2 Dataset. Please download it from the official source (due to licensing restrictions) and organize it in the following format:
+The model is trained on the PH2 Dataset and organized in the following format:
 ```bash
 MelanomaClassifier/
-├── data/
-│   └── PH2Dataset/
-│       ├── images/
-│       └── masks/
+├── PH2Dataset/
+│   └── Custom Images/
+│       ├── Lesion/
+│       ├── Normal/
+│       └── Others/
 ```
 
 ## 🚀 Usage
-### Training
+### MLP Classifier 
+To run the Multilayer Perceptron (MLP) classifier
 ```bash
-python train.py --epochs 50 --batch_size 32 --lr 0.001 --folds 5
+python MLPClassifier.py
 ```
-### Inference
+### 1D 10-Fold CNN
+To execute the 1-dimensional CNN
 ```bash
-python inference.py --image_path ./sample_image.jpg --model_path ./models/best_model.pth
+python 1D_10fold_CNN.py
+```
+### CNN Classifier
+To run the Convolutional Neural Network (CNN) classifier
+```bash
+python CNNClassifier.py
 ```
 
 ## 🔧 Configuration
 Model parameters, optimizer settings, and data paths can be configured through command-line arguments or by editing the train.py script.
 
 ## 📊 Evaluation
-Performance metrics such as accuracy, F1-score, and confusion matrices are computed and logged during cross-validation. Plots and logs are saved in the results/ directory.
+Performance metrics such as accuracy, recall, and loss are computed and logged during cross-validation. Plots and logs are saved in the results/ directory.
 
 ## 🤝 Contributing
 Contributions are welcome! Please open an issue or submit a pull request for improvements, bug fixes, or feature requests.
+
+## License
+This project is licensed under the MIT License. See LICENSE for details.
