@@ -36,7 +36,7 @@ A deep learning project for classifying skin lesions as melanoma or non-melanoma
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/your-username/MelanomaClassifier.git
+git clone https://github.com/eSVeeF/MelanomaClassifier.git
 cd MelanomaClassifier
 pip install -r requirements.txt
 ```
